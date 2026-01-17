@@ -135,7 +135,10 @@ export default {
         skip.value = 0
         await fetchPosts(false)
       } catch (err) {
-        alert(err.response?.data?.detail || 'Vote failed')
+        error.value = err.response?.data?.detail || 'Vote failed'
+        setTimeout(() => {
+          error.value = ''
+        }, 3000)
       }
     }
 

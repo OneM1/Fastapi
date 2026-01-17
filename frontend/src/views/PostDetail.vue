@@ -38,6 +38,8 @@
           </button>
         </div>
         
+        <div v-if="voteError" class="error-message">{{ voteError }}</div>
+        
         <div class="action-buttons">
           <router-link 
             v-if="canEdit"
@@ -49,10 +51,17 @@
           <button 
             v-if="canEdit"
             @click="handleDelete" 
-            class="btn-delete"
+            :class="['btn-delete', { 'confirm-delete': showDeleteConfirm }]"
             :disabled="deleting"
           >
-            {{ deleting ? 'Deleting...' : 'Delete' }}
+            {{ showDeleteConfirm ? 'Click again to confirm' : (deleting ? 'Deleting...' : 'Delete') }}
+          </button>
+          <button 
+            v-if="canEdit && showDeleteConfirm"
+            @click="showDeleteConfirm = false" 
+            class="btn-cancel"
+          >
+            Cancel
           </button>
           <router-link to="/" class="btn-back">Back to Posts</router-link>
         </div>
@@ -76,9 +85,13 @@ export default {
     const loading = ref(true)
     const deleting = ref(false)
     const error = ref('')
+    const voteError = ref('')
+    const showDeleteConfirm = ref(false)
 
     const isAuthenticated = computed(() => !!localStorage.getItem('token'))
     
+    // Note: Client-side JWT decoding is only for UI convenience
+    // The backend always validates tokens on each request for actual authorization
     const canEdit = computed(() => {
       if (!isAuthenticated.value || !post.value) return false
       
@@ -108,22 +121,30 @@ export default {
       try {
         await voteAPI.vote(post.value.id, dir)
         await fetchPost() // Refresh post to update vote count
+        voteError.value = ''
       } catch (err) {
-        alert(err.response?.data?.detail || 'Vote failed')
+        voteError.value = err.response?.data?.detail || 'Vote failed'
+        setTimeout(() => {
+          voteError.value = ''
+        }, 3000)
       }
     }
 
     const handleDelete = async () => {
-      if (!confirm('Are you sure you want to delete this post?')) return
+      if (!showDeleteConfirm.value) {
+        showDeleteConfirm.value = true
+        return
+      }
       
       try {
         deleting.value = true
         await postsAPI.deletePost(post.value.id)
         router.push('/')
       } catch (err) {
-        alert(err.response?.data?.detail || 'Failed to delete post')
+        error.value = err.response?.data?.detail || 'Failed to delete post'
       } finally {
         deleting.value = false
+        showDeleteConfirm.value = false
       }
     }
 
@@ -147,6 +168,8 @@ export default {
       loading,
       deleting,
       error,
+      voteError,
+      showDeleteConfirm,
       isAuthenticated,
       canEdit,
       handleVote,
@@ -231,6 +254,15 @@ export default {
   margin-bottom: 20px;
 }
 
+.error-message {
+  color: #e74c3c;
+  padding: 10px;
+  margin: 10px 0;
+  background: #fef2f2;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 .vote-btn {
   background: #f5f5f5;
   border: none;
@@ -295,9 +327,35 @@ export default {
   background: #c0392b;
 }
 
+.btn-delete.confirm-delete {
+  background: #c0392b;
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
 .btn-delete:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-cancel {
+  background: #95a5a6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+  background: #7f8c8d;
 }
 
 .btn-back {
