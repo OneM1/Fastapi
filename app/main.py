@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from sqlmodel import Session, select
 
-#from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import models,schemes
 from .database import create_db_and_tables, get_session
@@ -13,15 +13,19 @@ from . routers import post,user,auth,vote
 app = FastAPI()
 
 
-origins = ["https://google.com"]
+origins = [
+    "http://localhost:5173",  # Vue.js dev server default port
+    "http://localhost:3000",
+    "http://localhost:8080",
+]
  
-"""app.add_middleware(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)"""
+)
 
 @app.on_event("startup")
 def on_startup():
