@@ -177,6 +177,14 @@ The frontend will be available at `http://localhost:5173`
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+### Branch Protection
+
+This repository uses branch protection rules to maintain code quality and prevent accidental changes. Please see [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md) for details on:
+- How branch protection is configured
+- How to apply protection rules
+- Working with protected branches
+- Creating pull requests
+
 ## License
 
 This project is open source and available under the MIT License.

@@ -1,0 +1,21 @@
+# CODEOWNERS file
+# This file defines individuals or teams that are responsible for code in this repository.
+# These individuals are automatically requested for review when someone opens a pull request.
+
+# Default owners for everything in the repo
+* @OneM1
+
+# Backend code
+/app/ @OneM1
+/alembic/ @OneM1
+
+# Frontend code
+/frontend/ @OneM1
+
+# Configuration files
+*.yml @OneM1
+*.yaml @OneM1
+requirements.txt @OneM1
+
+# Documentation
+*.md @OneM1
