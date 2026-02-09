@@ -31,18 +31,18 @@ jobs:
           pip install flake8
           # Stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=env,venv,.venv,alembic,frontend
-          # Exit-zero treats all errors as warnings
+          # Warn about other style issues but don't fail the build
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=env,venv,.venv,alembic,frontend
-        continue-on-error: true
       
       - name: Run basic tests
         run: |
           # Run any existing tests
           if [ -f "test.py" ]; then
             echo "Running basic tests..."
-            python test.py || echo "Tests completed with warnings"
+            python test.py
+          else
+            echo "No test.py found, skipping tests"
           fi
-        continue-on-error: true
       
       - name: Check branch protection status
         run: |
