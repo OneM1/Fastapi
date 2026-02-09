@@ -85,8 +85,8 @@ Create a `.env` file in the root directory with the following:
 DATABASE_HOSTNAME=localhost
 DATABASE_PORT=5432
 DATABASE_NAME=fastapi_db
-DATABASE_USERNAME=your_username
-DATABASE_PASSWORD=your_password
+DATABASE_USERNAME=your_username_here
+DATABASE_PASSWORD=your_password_here
 SECRET_KEY=your-secret-key-here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
